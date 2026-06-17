@@ -105,8 +105,17 @@
         }
 
         /* ★ここを修正しました：枠線ではなく画像を緑色にする */
-        .perk-card.selected { border: 2px solid var(--border-color); z-index: 10; }
-        .perk-card.selected img { opacity: 1; filter: drop-shadow(0 0 0 var(--accent-color)) drop-shadow(0 0 10px var(--accent-color)) contrast(200%); }
+        .perk-card.selected { border: 2px solid var(--accent-color); box-shadow: 0 0 15px var(--accent-color); z-index: 10; }
+        .perk-card.selected img { opacity: 1; filter: none; }
+
+        .perk-card.selected::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--accent-color); /* 緑色 */
+            mix-blend-mode: multiply; /* 乗算：白は緑になり、黒は黒のままになる */
+            pointer-events: none;
+        }
 
         .info-panel { border: 1px solid var(--border-color); padding: 15px; background: #111; margin-bottom: 20px; }
         .info-panel h2 { margin: 0 0 10px 0; font-size: 1.1em; border-bottom: 1px solid #333; padding-bottom: 5px; }
