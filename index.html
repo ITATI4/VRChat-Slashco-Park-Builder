@@ -144,7 +144,7 @@
                 </div>
                 <input type="range" id="input-lvl" min="1" max="30" value="30">
                 <div class="btn-group">
-                    <button id="btn-reset">一斉リセット</button>
+                    <button id="btn-reset">選択リセット</button>
                     <button id="btn-reroll">RANDOMIZE</button>
                 </div>
             </div>
@@ -158,7 +158,7 @@
             </div>
 
             <div class="info-panel" id="panel-effects" style="display: none;">
-                <h2>選択中のパーク効果</h2>
+                <h2>発動中のパーク効果</h2>
                 <div id="active-perks-container" class="active-perk-list"></div>
             </div>
         </div>
@@ -356,7 +356,7 @@
             });
 
             let hasStats = false;
-            if (calc.healing !== 0) { appendStat(summaryContainer, "消費アイテム回復量", calc.healing, "%"); hasStats = true; }
+            if (calc.healing !== 0) { appendStat(summaryContainer, "アイテム回復量", calc.healing, "%"); hasStats = true; }
             if (calc.footstep !== 1.0) { appendStat(summaryContainer, "足音の大きさ", Math.round(calc.footstep * 100) - 100, "%"); hasStats = true; }
             if (calc.speed !== 0) { appendStat(summaryContainer, "移動速度", calc.speed, "%"); hasStats = true; }
             if (calc.damageTaken !== 0) { appendStat(summaryContainer, "被ダメージ", calc.damageTaken, "%"); hasStats = true; }
