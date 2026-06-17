@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slashco Perk Randomizer v2</title>
+    <title>Slashco Perk Randomizer v2.1</title>
     <style>
         /* --- デザイン設定 (CSS) --- */
         :root {
@@ -29,7 +29,6 @@
 
         h1 { margin-top: 0; font-size: 1.5em; text-shadow: 0 0 5px var(--accent-color); }
 
-        /* レイアウト */
         .main-container {
             display: flex;
             gap: 30px;
@@ -38,16 +37,9 @@
             align-items: flex-start;
         }
 
-        .left-col {
-            flex: 0 0 450px; /* 左側は少し小さめ固定幅 */
-        }
+        .left-col { flex: 0 0 450px; }
+        .right-col { flex: 1; min-width: 300px; }
 
-        .right-col {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        /* コントロールエリア */
         .controls {
             margin-bottom: 20px;
             display: flex;
@@ -64,16 +56,9 @@
 
         .status-row span { color: var(--accent-color); }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
+        .btn-group { display: flex; gap: 10px; margin-top: 5px; }
 
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--accent-color);
-        }
+        input[type="range"] { width: 100%; accent-color: var(--accent-color); }
 
         button {
             background: #222;
@@ -93,24 +78,9 @@
         button#btn-reroll:hover { background: #88ff88; }
         button#btn-reset:hover { background: #444; }
 
-        /* パーク一覧エリア */
-        .tier-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .tier-label {
-            font-weight: bold;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-
-        .perk-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 5px;
-        }
+        .tier-container { display: flex; flex-direction: column; gap: 15px; }
+        .tier-label { font-weight: bold; font-size: 0.9em; margin-bottom: 5px; }
+        .perk-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
 
         .perk-card {
             aspect-ratio: 1 / 1;
@@ -122,13 +92,7 @@
             transition: all 0.1s;
         }
 
-        .perk-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            opacity: 0.7;
-        }
+        .perk-card img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.7; }
 
         .perk-card.locked { border-color: #111; pointer-events: none; }
         .perk-card.locked img { opacity: 0.1; filter: grayscale(100%); }
@@ -140,63 +104,21 @@
             transform: translate(-50%, -50%); color: red; font-size: 1.5em; font-weight: bold;
         }
 
-        .perk-card.selected {
-            border: 3px solid var(--accent-color);
-            box-shadow: 0 0 10px var(--accent-color);
-            z-index: 10;
-        }
+        .perk-card.selected { border: 3px solid var(--accent-color); box-shadow: 0 0 10px var(--accent-color); z-index: 10; }
         .perk-card.selected img { opacity: 1; filter: none; }
 
-        /* 右側: ステータス・効果表示 */
-        .info-panel {
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            background: #111;
-            margin-bottom: 20px;
-        }
-        .info-panel h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.1em;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-        }
+        .info-panel { border: 1px solid var(--border-color); padding: 15px; background: #111; margin-bottom: 20px; }
+        .info-panel h2 { margin: 0 0 10px 0; font-size: 1.1em; border-bottom: 1px solid #333; padding-bottom: 5px; }
 
-        /* ステータスサマリー */
-        #status-summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            font-size: 0.9em;
-        }
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            background: #000;
-            padding: 5px 10px;
-            border: 1px solid #222;
-        }
+        #status-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 0.9em; }
+        .stat-item { display: flex; justify-content: space-between; background: #000; padding: 5px 10px; border: 1px solid #222; }
         .stat-val.positive { color: var(--buff-color); }
         .stat-val.negative { color: var(--debuff-color); }
 
-        /* 選択中のパークリスト */
-        .active-perk-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .active-perk-item {
-            display: flex;
-            gap: 15px;
-            border-bottom: 1px solid #222;
-            padding-bottom: 10px;
-        }
+        .active-perk-list { display: flex; flex-direction: column; gap: 15px; }
+        .active-perk-item { display: flex; gap: 15px; border-bottom: 1px solid #222; padding-bottom: 10px; }
         .active-perk-item:last-child { border-bottom: none; }
-        .active-perk-icon {
-            width: 50px;
-            height: 50px;
-            border: 2px solid var(--accent-color);
-            flex-shrink: 0;
-        }
+        .active-perk-icon { width: 50px; height: 50px; border: 2px solid var(--accent-color); flex-shrink: 0; }
         .active-perk-icon img { width: 100%; height: 100%; object-fit: cover; }
         .active-perk-details { flex: 1; }
         .active-perk-name { font-weight: bold; margin-bottom: 5px; font-size: 1em; }
@@ -243,101 +165,51 @@
     </div>
 
     <script>
-        // --- データ定義 ---
-        const IMG_PATH = "./images/"; 
-        const IMG_EXT = ".png";
-
-        // buffs/debuffs の文字列配列。debuffsで打ち消し対象になるものはオブジェクト化。
         const perkData = [
-            { id: "t1_1", name: "メカニック", tier: 1, reqLvl: 1, pp: 1, img: "mechanic_1",
-              buffs: ["給油速度+50％"], debuffs: [], stats: { refuel: 50 } },
-            { id: "t1_2", name: "健康", tier: 1, reqLvl: 1, pp: 1, img: "health_1",
-              buffs: ["消費アイテム回復量 +50％UP", "冷凍ピザが食べられる。"], debuffs: [], stats: { healing: 50 } },
-            { id: "t1_3", name: "アドレナリン・ラッシュ", tier: 1, reqLvl: 1, pp: 1, img: "adrenaline",
-              buffs: ["ヘリコプター着陸後の数十秒間 加速、軽度の回復、暗視効果付与"], debuffs: [] },
-            { id: "t1_4", name: "知覚過敏", tier: 1, reqLvl: 1, pp: 1, img: "hyper_senses",
-              buffs: ["Slasherの足音が大きくなる。"], debuffs: [] },
-            { id: "t1_5", name: "沈む流し台", tier: 1, reqLvl: 1, pp: 1, img: "sinking_sink",
-              buffs: ["ガラス瓶を食べることができ、わずかに回復できる"], debuffs: [] },
-            { id: "t1_6", name: "パニック・センス", tier: 1, reqLvl: 1, pp: 1, img: "panic_sense",
-              buffs: ["ラウンド開始から20分経過後、毎分1回、最も近い燃料・バッテリー・文書のオーラを短時間確認できる能力を得る"], debuffs: [] },
+            { id: "t1_1", name: "メカニック", tier: 1, reqLvl: 1, pp: 1, img: "mechanic_1", buffs: ["給油速度+50％"], debuffs: [], stats: { refuel: 50 } },
+            { id: "t1_2", name: "健康", tier: 1, reqLvl: 1, pp: 1, img: "health_1", buffs: ["消費アイテム回復量 +50％UP", "冷凍ピザが食べられる。"], debuffs: [], stats: { healing: 50 } },
+            { id: "t1_3", name: "アドレナリン・ラッシュ", tier: 1, reqLvl: 1, pp: 1, img: "adrenaline", buffs: ["ヘリコプター着陸後の数十秒間 加速、軽度の回復、暗視効果付与"], debuffs: [] },
+            { id: "t1_4", name: "知覚過敏", tier: 1, reqLvl: 1, pp: 1, img: "hyper_senses", buffs: ["Slasherの足音が大きくなる。"], debuffs: [] },
+            { id: "t1_5", name: "沈む流し台", tier: 1, reqLvl: 1, pp: 1, img: "sinking_sink", buffs: ["ガラス瓶を食べることができ、わずかに回復できる"], debuffs: [] },
+            { id: "t1_6", name: "パニック・センス", tier: 1, reqLvl: 1, pp: 1, img: "panic_sense", buffs: ["ラウンド開始から20分経過後、毎分1回、最も近い燃料・バッテリー・文書のオーラを短時間確認できる能力を得る"], debuffs: [] },
 
-            { id: "t2_1", name: "メカニックⅡ", tier: 2, reqLvl: 3, pp: 2, img: "mechanic_2",
-              buffs: ["バッテリー挿入難易度が下がる、バッテリー挿入に失敗してもダメージを受けなくなる"], debuffs: [] },
-            { id: "t2_2", name: "バウンティハンター", tier: 2, reqLvl: 3, pp: 2, img: "bounty_hunter",
-              buffs: ["依頼に関連するすべてのアイテムがかすかに光る。"], debuffs: [] },
-            { id: "t2_3", name: "マックナリー・ハンズ", tier: 2, reqLvl: 3, pp: 2, img: "mcnally_hands",
-              buffs: ["マスターロック607を使用した際に、壊れにくくなる。", "開錠したとき、少しだけ経験値とクレジットを入手する。"], 
-              debuffs: ["ガソリン挿入と機密文書の回収によって得られるクレジット報酬がわずかに減る"] },
-            { id: "t2_4", name: "スピード狂", tier: 2, reqLvl: 3, pp: 2, img: "speed_demon",
-              buffs: ["移動速度が遅くなる効果の影響を受けなくなる。"], 
-              debuffs: ["移動速度増加の効果時間の減りが25%速くなる。"], flags: ["ignore_slow"] },
-            { id: "t2_5", name: "影産まれ", tier: 2, reqLvl: 3, pp: 2, img: "shadow_born",
-              buffs: ["懐中電灯を使用していない間、暗闇での視力を高める"], debuffs: [] },
-            { id: "t2_6", name: "大食いチャンピオン", tier: 2, reqLvl: 3, pp: 2, img: "eating_champ",
-              buffs: ["消費アイテムによる回復効果が、半径6m以内の全プレイヤーに付与される"], 
-              debuffs: ["少なくとも１人のプレイヤーに付与された場合、自身の回復量が大幅に減少"] },
+            { id: "t2_1", name: "メカニックⅡ", tier: 2, reqLvl: 3, pp: 2, img: "mechanic_2", buffs: ["バッテリー挿入難易度が下がる、バッテリー挿入に失敗してもダメージを受けなくなる"], debuffs: [] },
+            { id: "t2_2", name: "バウンティハンター", tier: 2, reqLvl: 3, pp: 2, img: "bounty_hunter", buffs: ["依頼に関連するすべてのアイテムがかすかに光る。"], debuffs: [] },
+            { id: "t2_3", name: "マックナリー・ハンズ", tier: 2, reqLvl: 3, pp: 2, img: "mcnally_hands", buffs: ["マスターロック607を使用した際に、壊れにくくなる。", "開錠したとき、少しだけ経験値とクレジットを入手する。"], debuffs: ["ガソリン挿入と機密文書の回収によって得られるクレジット報酬がわずかに減る"] },
+            { id: "t2_4", name: "スピード狂", tier: 2, reqLvl: 3, pp: 2, img: "speed_demon", buffs: ["移動速度が遅くなる効果の影響を受けなくなる。"], debuffs: ["移動速度増加の効果時間の減りが25%速くなる。"], flags: ["ignore_slow"] },
+            { id: "t2_5", name: "影産まれ", tier: 2, reqLvl: 3, pp: 2, img: "shadow_born", buffs: ["懐中電灯を使用していない間、暗闇での視力を高める"], debuffs: [] },
+            { id: "t2_6", name: "大食いチャンピオン", tier: 2, reqLvl: 3, pp: 2, img: "eating_champ", buffs: ["消費アイテムによる回復効果が、半径6m以内の全プレイヤーに付与される"], debuffs: ["少なくとも１人のプレイヤーに付与された場合、自身の回復量が大幅に減少"] },
 
-            { id: "t3_1", name: "商人", tier: 3, reqLvl: 5, pp: 2, img: "merchant",
-              buffs: ["アイテムの買取率を50%に引き上げる。"], debuffs: [] },
-            { id: "t3_2", name: "軽い足取り", tier: 3, reqLvl: 5, pp: 2, img: "light_footed",
-              buffs: ["自身の足音の大きさ -50%"], debuffs: [{ text: "移動速度-5%", type: "slow" }], stats: { footstep_mult: 0.5, speed: -5 } },
-            { id: "t3_3", name: "健康Ⅱ", tier: 3, reqLvl: 5, pp: 2, img: "health_2",
-              buffs: ["消費アイテム回復量 +50％UP", "体力が50%以下になると、20秒毎に僅かに体力が回復する。"], debuffs: [], stats: { healing: 50 } },
-            { id: "t3_4", name: "ヘビー", tier: 3, reqLvl: 5, pp: 2, img: "heavy",
-              buffs: ["最大体力が少し増加。"], debuffs: [] },
-            { id: "t3_5", name: "近接遭遇", tier: 3, reqLvl: 5, pp: 2, img: "close_encounter",
-              buffs: ["体力が低いほど移動速度が少し速くなる。"], debuffs: [] },
-            { id: "t3_6", name: "第一対応者", tier: 3, reqLvl: 5, pp: 2, img: "first_responder",
-              buffs: ["瀕死状態のプレイヤーを回復する能力を獲得。このアクションには5分のクールダウンがあり、クレジットと経験値が報酬として得られる。"], 
-              debuffs: ["全ての非致死ダメージが致死ダメージに変わる。"] },
+            { id: "t3_1", name: "商人", tier: 3, reqLvl: 5, pp: 2, img: "merchant", buffs: ["アイテムの買取率を50%に引き上げる。"], debuffs: [] },
+            { id: "t3_2", name: "軽い足取り", tier: 3, reqLvl: 5, pp: 2, img: "light_footed", buffs: ["自身の足音の大きさ -50%"], debuffs: [{ text: "移動速度-5%", type: "slow" }], stats: { footstep_mult: 0.5, speed: -5 } },
+            { id: "t3_3", name: "健康Ⅱ", tier: 3, reqLvl: 5, pp: 2, img: "health_2", buffs: ["消費アイテム回復量 +50％UP", "体力が50%以下になると、20秒毎に僅かに体力が回復する。"], debuffs: [], stats: { healing: 50 } },
+            { id: "t3_4", name: "ヘビー", tier: 3, reqLvl: 5, pp: 2, img: "heavy", buffs: ["最大体力が少し増加。"], debuffs: [] },
+            { id: "t3_5", name: "近接遭遇", tier: 3, reqLvl: 5, pp: 2, img: "close_encounter", buffs: ["体力が低いほど移動速度が少し速くなる。"], debuffs: [] },
+            { id: "t3_6", name: "第一対応者", tier: 3, reqLvl: 5, pp: 2, img: "first_responder", buffs: ["瀕死状態のプレイヤーを回復する能力を獲得。このアクションには5分のクールダウンがあり、クレジットと経験値が報酬として得られる。"], debuffs: ["全ての非致死ダメージが致死ダメージに変わる。"] },
 
-            { id: "t4_1", name: "メカニックⅢ", tier: 4, reqLvl: 10, pp: 3, img: "mechanic_3",
-              buffs: ["バッテリーを挿入後に燃料を注いでも騒音が鳴らなくなる。", "燃料注入に失敗しても大きな音が出なくなる。", "燃料注入とバッテリー挿入のクレジットが2倍になる。"], debuffs: [] },
-            { id: "t4_2", name: "軽い足取りⅡ", tier: 4, reqLvl: 10, pp: 3, img: "light_footed_2",
-              buffs: ["自身の足音の大きさ -50%", "ロッカーの出入りが完全に無音になる。"], debuffs: [{ text: "移動速度-5%", type: "slow" }], stats: { footstep_mult: 0.5, speed: -5 } },
-            { id: "t4_3", name: "バッターアップ", tier: 4, reqLvl: 10, pp: 3, img: "batter_up",
-              buffs: ["スラッシャーをスタンさせると僅かに回復し、短時間加速する", "スタン成功時にボーナスEXPとクレジットが手に入る"], 
-              debuffs: ["給油速度が低下し、バッテリースキルチェックが難化する"] },
-            { id: "t4_4", name: "グルトン", tier: 4, reqLvl: 10, pp: 3, img: "glutton",
-              buffs: ["消耗アイテムの効果時間が50%減少するのが遅くなる。"], debuffs: ["消費アイテム回復量 -50％"], stats: { healing: -50 } },
-            { id: "t4_5", name: "会計士", tier: 4, reqLvl: 10, pp: 3, img: "accountant",
-              buffs: ["機密文書からかすかな音が聞こえるようになる。", "機密文書を入手した際の経験値とクレジットが倍になる。"], debuffs: [] },
-            { id: "t4_6", name: "神を騙す者", tier: 4, reqLvl: 10, pp: 3, img: "god_trickster",
-              buffs: ["死のお守りを使用する能力を獲得し、それを破壊することで、最も近いプレイヤーに一時的なパッシブ効果の死のお守りを付与する。"], 
-              debuffs: ["死のお守りによる復活は不可能となる"] },
+            { id: "t4_1", name: "メカニックⅢ", tier: 4, reqLvl: 10, pp: 3, img: "mechanic_3", buffs: ["バッテリーを挿入後に燃料を注いでも騒音が鳴らなくなる。", "燃料注入に失敗しても大きな音が出なくなる。", "燃料注入とバッテリー挿入のクレジットが2倍になる。"], debuffs: [] },
+            { id: "t4_2", name: "軽い足取りⅡ", tier: 4, reqLvl: 10, pp: 3, img: "light_footed_2", buffs: ["自身の足音の大きさ -50%", "ロッカーの出入りが完全に無音になる。"], debuffs: [{ text: "移動速度-5%", type: "slow" }], stats: { footstep_mult: 0.5, speed: -5 } },
+            { id: "t4_3", name: "バッターアップ", tier: 4, reqLvl: 10, pp: 3, img: "batter_up", buffs: ["スラッシャーをスタンさせると僅かに回復し、短時間加速する", "スタン成功時にボーナスEXPとクレジットが手に入る"], debuffs: ["給油速度が低下し、バッテリースキルチェックが難化する"] },
+            { id: "t4_4", name: "グルトン", tier: 4, reqLvl: 10, pp: 3, img: "glutton", buffs: ["消耗アイテムの効果時間が50%減少するのが遅くなる。"], debuffs: ["消費アイテム回復量 -50％"], stats: { healing: -50 } },
+            { id: "t4_5", name: "会計士", tier: 4, reqLvl: 10, pp: 3, img: "accountant", buffs: ["機密文書からかすかな音が聞こえるようになる。", "機密文書を入手した際の経験値とクレジットが倍になる。"], debuffs: [] },
+            { id: "t4_6", name: "神を騙す者", tier: 4, reqLvl: 10, pp: 3, img: "god_trickster", buffs: ["死のお守りを使用する能力を獲得し、それを破壊することで、最も近いプレイヤーに一時的なパッシブ効果の死のお守りを付与する。"], debuffs: ["死のお守りによる復活は不可能となる"] },
 
-            { id: "t5_1", name: "ステルス・カモフラージュ", tier: 5, reqLvl: 15, pp: 3, img: "stealth_camo",
-              buffs: ["Slasherに見つかりにくくなる。"], debuffs: [] },
-            { id: "t5_2", name: "ウサギの足取り", tier: 5, reqLvl: 15, pp: 3, img: "rabbit_foot",
-              buffs: ["最初に踏んだトラバサミを無効化し、破壊できる。", "トラバサミがかすかに赤く発光する。"], debuffs: [] },
-            { id: "t5_3", name: "アスリート", tier: 5, reqLvl: 15, pp: 3, img: "athlete",
-              buffs: ["ラウンド開始から5分間、全ての行動速度が上がる。"], debuffs: [{ text: "重いアイテムを持つとより遅くなる。", type: "heavy_slow" }] },
-            { id: "t5_4", name: "エクスタミネーター用の懐中電灯", tier: 5, reqLvl: 15, pp: 3, img: "ex_flashlight",
-              buffs: ["照射距離が2倍になり、点灯・消灯音がslasherに聞こえなくなる。"], debuffs: ["懐中電灯の光線が50%狭くなる。"] },
-            { id: "t5_5", name: "窮地", tier: 5, reqLvl: 15, pp: 3, img: "tight_spot",
-              buffs: ["脱出フェーズではないとき、致死量のダメージを受けると1度だけダメージを無効化し、5秒間無敵化と、付近のslasherにスタン・自身に加速効果を付与"], 
-              debuffs: ["消費アイテム回復量 -50％"], stats: { healing: -50 } },
-            { id: "t5_6", name: "スケープゴート", tier: 5, reqLvl: 15, pp: 3, img: "scapegoat",
-              buffs: ["健康状態かつ他プレイヤーから10メートル以内の場合、そのプレイヤーが受けるダメージは全て非致死ダメージとして自分に転嫁される。"], debuffs: [] },
+            { id: "t5_1", name: "ステルス・カモフラージュ", tier: 5, reqLvl: 15, pp: 3, img: "stealth_camo", buffs: ["Slasherに見つかりにくくなる。"], debuffs: [] },
+            { id: "t5_2", name: "ウサギの足取り", tier: 5, reqLvl: 15, pp: 3, img: "rabbit_foot", buffs: ["最初に踏んだトラバサミを無効化し、破壊できる。", "トラバサミがかすかに赤く発光する。"], debuffs: [] },
+            { id: "t5_3", name: "アスリート", tier: 5, reqLvl: 15, pp: 3, img: "athlete", buffs: ["ラウンド開始から5分間、全ての行動速度が上がる。"], debuffs: [{ text: "重いアイテムを持つとより遅くなる。", type: "heavy_slow" }] },
+            { id: "t5_4", name: "エクスタミネーター用の懐中電灯", tier: 5, reqLvl: 15, pp: 3, img: "ex_flashlight", buffs: ["照射距離が2倍になり、点灯・消灯音がslasherに聞こえなくなる。"], debuffs: ["懐中電灯の光線が50%狭くなる。"] },
+            { id: "t5_5", name: "窮地", tier: 5, reqLvl: 15, pp: 3, img: "tight_spot", buffs: ["脱出フェーズではないとき、致死量のダメージを受けると1度だけダメージを無効化し、5秒間無敵化と、付近のslasherにスタン・自身に加速効果を付与"], debuffs: ["消費アイテム回復量 -50％"], stats: { healing: -50 } },
+            { id: "t5_6", name: "スケープゴート", tier: 5, reqLvl: 15, pp: 3, img: "scapegoat", buffs: ["健康状態かつ他プレイヤーから10メートル以内の場合、そのプレイヤーが受けるダメージは全て非致死ダメージとして自分に転嫁される。"], debuffs: [] },
 
-            { id: "t6_1", name: "GROUCH化", tier: 6, reqLvl: 20, pp: 4, img: "grouch",
-              buffs: ["ロッカーに隠れている間、体力が少しずつ回復する。", "4分毎に燃料を一口飲めて、全ての行動速度を短時間上昇させる。"], debuffs: [] },
-            { id: "t6_2", name: "エクストリーム・バフ", tier: 6, reqLvl: 20, pp: 4, img: "extreme_buff",
-              buffs: ["重いアイテムを持っていても動きが遅くならない。"], debuffs: ["すべての被ダメージ +50%"], stats: { damageTaken: 50 }, flags: ["ignore_heavy_slow"] },
-            { id: "t6_3", name: "バルカン・ウォーリアー", tier: 6, reqLvl: 20, pp: 4, img: "vulcan_warrior",
-              buffs: ["バルカン・ブーストの後遺症で動けなくならない。"], debuffs: ["バルカン・ブーストの注油速度ボーナスが減少する"] },
-            { id: "t6_4", name: "リード・ベリー", tier: 6, reqLvl: 20, pp: 4, img: "lead_belly",
-              buffs: ["すべての被ダメージ -50%", "ネガティブ効果の減少速度が50%増加"], debuffs: ["自身の足音の大きさ +50%"], stats: { damageTaken: -50, footstep_mult: 1.5 } },
-            { id: "t6_5", name: "ソリッド・ジョン", tier: 6, reqLvl: 20, pp: 4, img: "solid_jon",
-              buffs: ["自身が入っているロッカーを初めて見られた際にだけ殺されない。"], debuffs: [] },
-            { id: "t6_6", name: "異常なドクラー", tier: 6, reqLvl: 20, pp: 4, img: "anomalous_doc",
-              buffs: ["半径20メートル以内の全プレイヤー: 軽度のダメージ耐性 / 回復量+25% / 消耗速度-10% / 給油速度+25%"], 
-              debuffs: ["すべての被ダメージ +100%", { text: "移動速度 -20%", type: "slow" }], stats: { healing: 25, damageTaken: 100, speed: -20, refuel: 25 } }
+            { id: "t6_1", name: "GROUCH化", tier: 6, reqLvl: 20, pp: 4, img: "grouch", buffs: ["ロッカーに隠れている間、体力が少しずつ回復する。", "4分毎に燃料を一口飲めて、全ての行動速度を短時間上昇させる。"], debuffs: [] },
+            { id: "t6_2", name: "エクストリーム・バフ", tier: 6, reqLvl: 20, pp: 4, img: "extreme_buff", buffs: ["重いアイテムを持っていても動きが遅くならない。"], debuffs: ["すべての被ダメージ +50%"], stats: { damageTaken: 50 }, flags: ["ignore_heavy_slow"] },
+            { id: "t6_3", name: "バルカン・ウォーリアー", tier: 6, reqLvl: 20, pp: 4, img: "vulcan_warrior", buffs: ["バルカン・ブーストの後遺症で動けなくならない。"], debuffs: ["バルカン・ブーストの注油速度ボーナスが減少する"] },
+            { id: "t6_4", name: "リード・ベリー", tier: 6, reqLvl: 20, pp: 4, img: "lead_belly", buffs: ["すべての被ダメージ -50%", "ネガティブ効果の減少速度が50%増加"], debuffs: ["自身の足音の大きさ +50%"], stats: { damageTaken: -50, footstep_mult: 1.5 } },
+            { id: "t6_5", name: "ソリッド・ジョン", tier: 6, reqLvl: 20, pp: 4, img: "solid_jon", buffs: ["自身が入っているロッカーを初めて見られた際にだけ殺されない。"], debuffs: [] },
+            { id: "t6_6", name: "異常なドクター", tier: 6, reqLvl: 20, pp: 4, img: "anomalous_doc", buffs: ["半径20メートル以内の全プレイヤー(自身は対象外): 軽度のダメージ耐性 / 回復量+25% / 消耗速度-10% / 給油速度+25%"], debuffs: ["すべての被ダメージ +100%", { text: "移動速度 -20%", type: "slow" }], stats: { damageTaken: 100, speed: -20 } }
         ];
 
-        // --- アプリケーションロジック ---
-        let currentLevel = 30; // 初期値変更
+        let currentLevel = 30;
         let excludedPerks = new Set();
         let selectedPerks = new Set();
 
@@ -354,7 +226,6 @@
             elLvlInput.addEventListener('input', (e) => {
                 currentLevel = parseInt(e.target.value);
                 updateControls();
-                // ※レベル変更時は盤面をリセット（ランダム再計算はしない）
                 selectedPerks.clear();
                 updateVisuals();
                 renderRightPanel();
@@ -370,15 +241,12 @@
             document.getElementById('btn-reroll').addEventListener('click', reroll);
         }
 
-        function getMaxPP(lvl) {
-            return Math.min(15, Math.floor(lvl / 2));
-        }
+        function getMaxPP(lvl) { return Math.min(15, Math.floor(lvl / 2)); }
 
         function renderGrid() {
             const tiers = [1, 2, 3, 4, 5, 6];
             tiers.forEach(tier => {
                 const tierDiv = document.createElement('div');
-                const reqLvl = perkData.find(p=>p.tier===tier).reqLvl;
                 const ppCost = perkData.find(p=>p.tier===tier).pp;
                 tierDiv.innerHTML = `<div class="tier-label">Tier ${toRoman(tier)} : PP${ppCost}</div>`;
                 
@@ -397,7 +265,7 @@
                         if (card.classList.contains('locked')) return;
                         if (excludedPerks.has(perk.id)) excludedPerks.delete(perk.id);
                         else excludedPerks.add(perk.id);
-                        updateVisuals(); // 選択/除外の見た目だけ更新
+                        updateVisuals();
                     });
                     grid.appendChild(card);
                 });
@@ -436,7 +304,6 @@
                 pool = pool.filter(p => p.id !== pick.id);
             }
 
-            elCurPPDisp.textContent = currentPP;
             updateVisuals();
             renderRightPanel();
         }
@@ -456,7 +323,6 @@
             elCurPPDisp.textContent = currentPP;
         }
 
-        // --- 右パネルの描画（ステータス＆効果） ---
         function renderRightPanel() {
             const panelStatus = document.getElementById('panel-status');
             const panelEffects = document.getElementById('panel-effects');
@@ -474,25 +340,21 @@
 
             const selectedList = perkData.filter(p => selectedPerks.has(p.id));
             
-            // フラグチェック
             const ignoreSlow = selectedList.some(p => p.flags && p.flags.includes("ignore_slow"));
             const ignoreHeavySlow = selectedList.some(p => p.flags && p.flags.includes("ignore_heavy_slow"));
 
-            // ステータス計算
             let calc = { healing: 0, footstep: 1.0, speed: 0, damageTaken: 0, refuel: 0 };
             
             selectedList.forEach(p => {
                 if(p.stats) {
                     if(p.stats.healing) calc.healing += p.stats.healing;
                     if(p.stats.footstep_mult) calc.footstep *= p.stats.footstep_mult;
-                    // スピード狂があれば移動速度低下は無視
                     if(p.stats.speed && !(ignoreSlow && p.stats.speed < 0)) calc.speed += p.stats.speed;
                     if(p.stats.damageTaken) calc.damageTaken += p.stats.damageTaken;
                     if(p.stats.refuel) calc.refuel += p.stats.refuel;
                 }
             });
 
-            // ステータス表示DOM構築
             let hasStats = false;
             if (calc.healing !== 0) { appendStat(summaryContainer, "消費アイテム回復量", calc.healing, "%"); hasStats = true; }
             if (calc.footstep !== 1.0) { appendStat(summaryContainer, "足音の大きさ", Math.round(calc.footstep * 100) - 100, "%"); hasStats = true; }
@@ -503,7 +365,6 @@
             panelStatus.style.display = hasStats ? 'block' : 'none';
             panelEffects.style.display = 'block';
 
-            // 効果一覧DOM構築
             selectedList.forEach(p => {
                 const item = document.createElement('div');
                 item.className = 'active-perk-item';
@@ -515,9 +376,7 @@
                         <div class="active-perk-name">${p.name}</div>
                 `;
 
-                p.buffs.forEach(b => {
-                    html += `<div class="effect-text buff-text">+ ${b}</div>`;
-                });
+                p.buffs.forEach(b => { html += `<div class="effect-text buff-text">+ ${b}</div>`; });
 
                 p.debuffs.forEach(d => {
                     let isText = typeof d === 'string';
@@ -552,9 +411,7 @@
             container.appendChild(div);
         }
 
-        function toRoman(num) {
-            return ["I", "II", "III", "IV", "V", "VI"][num - 1] || num;
-        }
+        function toRoman(num) { return ["I", "II", "III", "IV", "V", "VI"][num - 1] || num; }
 
         init();
     </script>
